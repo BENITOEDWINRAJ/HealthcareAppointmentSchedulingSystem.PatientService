@@ -15,4 +15,8 @@
     <ProjectReference Include="..\PatientService.Core\PatientService.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Interfaces\" />
+  </ItemGroup>
+
 </Project>

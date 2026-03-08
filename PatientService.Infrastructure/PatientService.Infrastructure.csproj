@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Confluent.Kafka" Version="2.13.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.24" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.24" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.24" />
@@ -18,6 +19,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PatientService.Application\PatientService.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="SharedKafka">
+      <HintPath>..\..\SharedKafka_HealthcareAppointmentSchedulingSystem\SharedKafka\bin\Debug\net8.0\SharedKafka.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

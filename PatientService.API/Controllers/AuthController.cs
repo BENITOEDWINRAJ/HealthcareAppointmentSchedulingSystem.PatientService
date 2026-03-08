@@ -11,10 +11,10 @@ namespace PatientService.API.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IUserRepository _repo;
-        private readonly JwtService _jwt;
+        private readonly IJwtService _jwt;
         private readonly ILogger<AuthController> _logger;
 
-        public AuthController(IUserRepository repo, JwtService jwt, ILogger<AuthController> logger)
+        public AuthController(IUserRepository repo, IJwtService jwt, ILogger<AuthController> logger)
         {
             _repo = repo;
             _jwt = jwt;

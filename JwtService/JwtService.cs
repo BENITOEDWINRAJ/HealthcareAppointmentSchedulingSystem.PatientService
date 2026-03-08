@@ -5,14 +5,17 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using PatientService.Core.Entities;
 
-public class JwtService
+public class JwtService : IJwtService
 {
     private readonly IConfiguration _config;
+
+   // public JwtService() { }
 
     public JwtService(IConfiguration config)
     {
         _config = config;
     }
+    
 
     public string GenerateToken(User user)
     {
@@ -40,4 +43,9 @@ public class JwtService
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
+}
+
+public interface IJwtService
+{
+    string GenerateToken(User user);
 }
