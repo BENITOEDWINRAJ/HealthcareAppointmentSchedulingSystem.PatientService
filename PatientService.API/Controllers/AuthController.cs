@@ -73,8 +73,7 @@ namespace PatientService.API.Controllers
             {
                 return Unauthorized("Invalid username or password");
             }
-        }
-        
+        }       
 
         
     }

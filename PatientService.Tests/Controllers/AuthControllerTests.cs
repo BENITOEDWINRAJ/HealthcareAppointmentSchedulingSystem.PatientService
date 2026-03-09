@@ -9,6 +9,7 @@ using PatientService.Application.DTOs;
 using FluentAssertions;
 using PatientService.Application.Handlers.Interfaces;
 using PatientService.Application.Handlers;
+using PatientService.Application.Commands;
 
 
 namespace PatientService.Tests.Controllers
@@ -49,85 +50,106 @@ namespace PatientService.Tests.Controllers
                 Role = "Admin"
             };
 
-            _repoMock
-                .Setup(x => x.AddAsync(It.IsAny<User>()))
-                .Returns(Task.CompletedTask);
+            var userId = Guid.NewGuid();
+
+            _registerHandler
+                .Setup(x => x.Handle(It.IsAny<RegisterUserCommand>()))
+                .ReturnsAsync(userId);
 
             // Act
             var result = await _controller.Register(request);
 
             // Assert
-            result.Should().BeOfType<OkObjectResult>();
+            var okResult = result as OkObjectResult;
 
-            _repoMock.Verify(x =>
-                x.AddAsync(It.IsAny<User>()), Times.Once);
+            okResult.Should().NotBeNull();
+            okResult!.Value.Should().BeOfType<Guid>();
+
+            _registerHandler.Verify(
+                x => x.Handle(It.IsAny<RegisterUserCommand>()),
+                Times.Once);
         }
 
         [Fact]
         public async Task Login_ShouldReturnToken_WhenCredentialsValid()
         {
             // Arrange
-            var password = "password123";
-            var hashed = BCrypt.Net.BCrypt.HashPassword(password);
+            /* var password = "password123";
+             var hashed = BCrypt.Net.BCrypt.HashPassword(password);
 
-            var user = new User
-            {
-                Id = Guid.NewGuid(),
-                Username = "testuser",
-                PasswordHash = hashed,
-                Role = "Doctor"
-            };
+             var user = new User
+             {
+                 Id = Guid.NewGuid(),
+                 Username = "testuser",
+                 PasswordHash = hashed,
+                 Role = "Doctor"
+             };
 
+             var request = new LoginRequest
+             {
+                 Username = "testuser",
+                 Password = password
+             };
+
+             _repoMock
+                 .Setup(x => x.GetByUsernameAsync(request.Username))
+                 .ReturnsAsync(user);
+
+             _jwtMock
+                 .Setup(x => x.GenerateToken(user))
+                 .Returns("fake-jwt-token");
+
+             // Act
+             var result = await _controller.Login(request);
+
+             // Assert
+             var ok = result as OkObjectResult;
+
+             ok.Should().NotBeNull();
+             ok.Value.Should().Be("fake-jwt-token");*/
             var request = new LoginRequest
             {
                 Username = "testuser",
-                Password = password
+                Password = "password"
             };
 
-            _repoMock
-                .Setup(x => x.GetByUsernameAsync(request.Username))
-                .ReturnsAsync(user);
+            _loginHandler
+                .Setup(x => x.Handle(It.IsAny<LoginCommand>()))
+                .ReturnsAsync("fake-jwt-token");
 
-            _jwtMock
-                .Setup(x => x.GenerateToken(user))
-                .Returns("fake-jwt-token");
-
-            // Act
             var result = await _controller.Login(request);
 
-            // Assert
             var ok = result as OkObjectResult;
 
             ok.Should().NotBeNull();
-            ok.Value.Should().Be("fake-jwt-token");
+
+            var value = ok!.Value;
+
+            var tokenProperty = value!.GetType().GetProperty("Token");
+            var tokenValue = tokenProperty!.GetValue(value)?.ToString();
+
+            tokenValue.Should().Be("fake-jwt-token");
         }
 
         [Fact]
         public async Task Login_ShouldReturnUnauthorized_WhenPasswordInvalid()
         {
             // Arrange
-            var user = new User
-            {
-                Username = "testuser",
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword("correct-password"),
-                Role = "Patient"
-            };
-
             var request = new LoginRequest
             {
                 Username = "testuser",
                 Password = "wrong-password"
             };
 
-            _repoMock
-                .Setup(x => x.GetByUsernameAsync(request.Username))
-                .ReturnsAsync(user);
+            _loginHandler
+                .Setup(x => x.Handle(It.IsAny<LoginCommand>()))
+                .ThrowsAsync(new UnauthorizedAccessException());
 
             // Act
             var result = await _controller.Login(request);
 
             // Assert
-            result.Should().BeOfType<UnauthorizedResult>();
+            result.Should().BeOfType<UnauthorizedObjectResult>();
         }
 
         [Fact]
@@ -140,15 +162,61 @@ namespace PatientService.Tests.Controllers
                 Password = "password"
             };
 
-            _repoMock
-                .Setup(x => x.GetByUsernameAsync(request.Username))
-                .ReturnsAsync((User)null);
+            _loginHandler
+                .Setup(x => x.Handle(It.IsAny<LoginCommand>()))
+                .ThrowsAsync(new UnauthorizedAccessException());
 
             // Act
             var result = await _controller.Login(request);
 
             // Assert
-            result.Should().BeOfType<UnauthorizedResult>();
+            result.Should().BeOfType<UnauthorizedObjectResult>();
         }
+
+        [Fact]
+        public async Task Register_ReturnsOk_WithUserId()
+        {
+            var request = new RegisterRequest
+            {
+                Username = "testuser",
+                Password = "password",
+                Role = "Patient"
+            };
+
+            var userId = Guid.NewGuid();
+
+            _registerHandler
+                .Setup(x => x.Handle(It.IsAny<RegisterUserCommand>()))
+                .ReturnsAsync(userId);
+
+            var result = await _controller.Register(request);
+
+            var okResult = result as OkObjectResult;
+
+            okResult.Should().NotBeNull();
+            okResult!.StatusCode.Should().Be(200);
+        }
+        
+        // ----------------------------------------------------
+        // Login - Unauthorized
+        // ----------------------------------------------------
+        [Fact]
+        public async Task Login_ReturnsUnauthorized_WhenInvalidCredentials()
+        {
+            var request = new LoginRequest
+            {
+                Username = "testuser",
+                Password = "wrongpassword"
+            };
+
+            _loginHandler
+                .Setup(x => x.Handle(It.IsAny<LoginCommand>()))
+                .ThrowsAsync(new UnauthorizedAccessException());
+
+            var result = await _controller.Login(request);
+
+            result.Should().BeOfType<UnauthorizedObjectResult>();
+        }
+
     }
 }
