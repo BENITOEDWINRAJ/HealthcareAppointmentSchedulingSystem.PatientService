@@ -74,24 +74,7 @@ namespace PatientService.API.Controllers
                 return Unauthorized("Invalid username or password");
             }
         }
-
-        [HttpPost("loginNoKafka")]
-        public async Task<IActionResult> LoginNoKafka(LoginRequest request)
-        {
-            _logger.LogInformation("Login attempt for {Username}",
-        request.Username);
-            var user = await _repo.GetByUsernameAsync(request.Username);
-
-            if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
-                return Unauthorized();
-
-            var token = _jwt.GenerateToken(user);
-
-            _logger.LogInformation("Login successful {Username}",
-        request.Username);
-
-            return Ok(token);
-        }      
+        
 
         
     }

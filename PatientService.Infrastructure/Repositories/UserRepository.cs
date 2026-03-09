@@ -27,7 +27,7 @@ namespace PatientService.Infrastructure.Repositories
         {
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
-           /* await _kafka.PublishUserCreated(new UserCreatedEvent
+            /*await _kafka.PublishUserCreated(new UserCreatedEvent
             {
                 UserId = user.Id,
                 Username = user.Username,
