@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\JwtService\JwtService.csproj" />
     <ProjectReference Include="..\PatientService.Core\PatientService.Core.csproj" />
   </ItemGroup>
 

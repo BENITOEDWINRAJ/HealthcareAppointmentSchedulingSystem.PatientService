@@ -13,6 +13,8 @@ using PatientService.Core.Repositories;
 using PatientService.Infrastructure.Data;
 using PatientService.Infrastructure.Messaging;
 using PatientService.Infrastructure.Repositories;
+using PatientService.Application.Handlers.Interfaces;
+using PatientService.Application.Handlers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,6 +53,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 //builder.Services.AddScoped<JwtService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<IRegisterUserHandler, RegisterUserHandler>();
+builder.Services.AddScoped<ILoginHandler, LoginHandler>();
 
 // Kafka
 builder.Services.AddSingleton<KafkaProducerService>();

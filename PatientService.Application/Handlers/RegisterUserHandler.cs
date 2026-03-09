@@ -4,10 +4,11 @@ using PatientService.Core.Repositories;
 
 using PatientService.Core.Entities;
 using PatientService.Core.Repositories;
+using PatientService.Application.Handlers.Interfaces;
 
 namespace PatientService.Application.Handlers
 {
-    public class RegisterUserHandler
+    public class RegisterUserHandler :IRegisterUserHandler
     {
         private readonly IUserRepository _repository;
 

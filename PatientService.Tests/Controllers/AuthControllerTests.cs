@@ -7,6 +7,8 @@ using PatientService.Core.Entities;
 using PatientService.Core.Repositories;
 using PatientService.Application.DTOs;
 using FluentAssertions;
+using PatientService.Application.Handlers.Interfaces;
+using PatientService.Application.Handlers;
 
 
 namespace PatientService.Tests.Controllers
@@ -16,7 +18,8 @@ namespace PatientService.Tests.Controllers
         private readonly Mock<IUserRepository> _repoMock;
         private readonly Mock<IJwtService> _jwtMock;
         private readonly Mock<ILogger<AuthController>> _loggerMock;
-
+        private readonly Mock<IRegisterUserHandler> _registerHandler;
+        private readonly Mock<ILoginHandler> _loginHandler;
         private readonly AuthController _controller;
 
         public AuthControllerTests()
@@ -24,11 +27,14 @@ namespace PatientService.Tests.Controllers
             _repoMock = new Mock<IUserRepository>();
             _jwtMock = new Mock<IJwtService>();
             _loggerMock = new Mock<ILogger<AuthController>>();
-
+            _registerHandler = new Mock<IRegisterUserHandler>();
+            _loginHandler = new Mock<ILoginHandler>();
             _controller = new AuthController(
                 _repoMock.Object,
                 _jwtMock.Object,
-                _loggerMock.Object
+                _loggerMock.Object,
+                _registerHandler.Object,
+                _loginHandler.Object
             );
         }
 

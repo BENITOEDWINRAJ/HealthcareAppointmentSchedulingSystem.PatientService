@@ -16,6 +16,6 @@ namespace PatientService.Core.Entities
         [Required]
         public string PasswordHash { get; set; }
         [Required]
-        public required string Role { get; set; }
+        public required string Role { get; set; }        
     }
 }
