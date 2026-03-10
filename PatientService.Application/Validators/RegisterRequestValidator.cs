@@ -14,7 +14,7 @@ namespace PatientService.Application.Validators
 
             RuleFor(x => x.Password)
                 .NotEmpty().WithMessage("Password is required")
-                .MinimumLength(3).WithMessage("Password must be at least 6 characters");
+                .MinimumLength(3).WithMessage("Password must be at least 3 characters");
 
             RuleFor(x => x.Role)
                 .NotEmpty().WithMessage("Role is required")

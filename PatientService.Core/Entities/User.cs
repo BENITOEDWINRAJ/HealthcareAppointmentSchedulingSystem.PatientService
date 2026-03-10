@@ -13,9 +13,11 @@ namespace PatientService.Core.Entities
         public Guid Id { get; set; }
         [Required]
         public string Username { get; set; }
-        [Required]
-        public string PasswordHash { get; set; }
-        [Required]
-        public required string Role { get; set; }        
+        
+        public  string PasswordHash { get; set; }
+        
+        public required string Role { get; set; }
+        
+        public required string Password { get; set; }
     }
 }

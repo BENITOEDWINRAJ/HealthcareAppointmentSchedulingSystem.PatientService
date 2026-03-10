@@ -27,8 +27,11 @@ public class JwtService : IJwtService
 
         var claims = new[]
         {
+           // new Claim("userid", user.Id.ToString()),
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Role, user.Role)
+            new Claim(ClaimTypes.Name, user.Username),
+            new Claim(ClaimTypes.Role, user.Role),
+            new Claim(JwtRegisteredClaimNames.Aud, "MyAppUsers")
         };
 
         var creds = new SigningCredentials(new SymmetricSecurityKey(
@@ -36,12 +39,14 @@ public class JwtService : IJwtService
         ), SecurityAlgorithms.HmacSha256);
 
         var token = new JwtSecurityToken(
+            issuer: _config["Jwt:Issuer"],          
+            audience: _config["Jwt:Audience"],
             claims: claims,
             expires: DateTime.Now.AddHours(3),
             signingCredentials: creds
         );
 
-        return new JwtSecurityTokenHandler().WriteToken(token);
+         return new JwtSecurityTokenHandler().WriteToken(token);        
     }
 }
 

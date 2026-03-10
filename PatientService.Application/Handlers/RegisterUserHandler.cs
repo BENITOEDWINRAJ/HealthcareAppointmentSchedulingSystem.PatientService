@@ -23,6 +23,7 @@ namespace PatientService.Application.Handlers
             {
                 Id = Guid.NewGuid(),
                 Username = command.Username,
+                Password = command.Password,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(command.Password),
                 Role = command.Role
             };

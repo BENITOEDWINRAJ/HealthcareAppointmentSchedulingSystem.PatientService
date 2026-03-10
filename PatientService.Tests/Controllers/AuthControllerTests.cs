@@ -111,6 +111,7 @@ namespace PatientService.Tests.Controllers
             {
                 Username = "testuser",
                 Password = "password"
+               // ,Role = "Patient"
             };
 
             _loginHandler
@@ -139,6 +140,7 @@ namespace PatientService.Tests.Controllers
             {
                 Username = "testuser",
                 Password = "wrong-password"
+                //,Role = "Doctor"
             };
 
             _loginHandler
@@ -160,6 +162,7 @@ namespace PatientService.Tests.Controllers
             {
                 Username = "unknown",
                 Password = "password"
+                //,Role = "Patient"
             };
 
             _loginHandler
@@ -206,7 +209,8 @@ namespace PatientService.Tests.Controllers
             var request = new LoginRequest
             {
                 Username = "testuser",
-                Password = "wrongpassword"
+                Password = "wrongpassword",
+               //, Role = "Doctor"
             };
 
             _loginHandler

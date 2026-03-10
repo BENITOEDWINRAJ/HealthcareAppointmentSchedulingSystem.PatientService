@@ -35,6 +35,7 @@ namespace PatientService.API.Controllers
             {
                 Id = Guid.NewGuid(),
                 Username = request.Username,
+                Password = request.Password,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
                 Role = request.Role
             };
@@ -67,7 +68,7 @@ namespace PatientService.API.Controllers
                 var query = new LoginCommand(request.Username, request.Password);
                 var token = await _loginHandler.Handle(query);
 
-                return Ok(new { Token = token });
+                return Ok(new { Token = token });                
             }
             catch (UnauthorizedAccessException)
             {
