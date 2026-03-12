@@ -7,9 +7,7 @@ using PatientService.Core.Entities;
 
 public class JwtService : IJwtService
 {
-    private readonly IConfiguration _config;
-
-   // public JwtService() { }
+    private readonly IConfiguration _config;      
 
     public JwtService(IConfiguration config)
     {

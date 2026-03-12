@@ -9,9 +9,9 @@ namespace PatientService.Core.Repositories
 {
     public interface IUserRepository
     {
-        Task<User> GetByUsernameAsync(string username);
-        Task<User> GetByIdAsync(Guid id);
-        Task<List<User>> GetAllAsync();
-        Task AddAsync(User user); // Ensure this method is public
+        public Task<User?> GetByUsernameAsync(string username);
+        public Task<User> GetByIdAsync(Guid id);
+        public Task<List<User>> GetAllAsync();
+        public Task AddAsync(User user); 
     }
 }

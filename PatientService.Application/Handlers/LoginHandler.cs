@@ -29,14 +29,29 @@ namespace PatientService.Application.Handlers
 
         public async Task<string> Handle(LoginCommand query)
         {
-            
+
+            /* var user = await _repo.GetByUsernameAsync(query.Username);
+
+             if (user == null || !BCrypt.Net.BCrypt.Verify(query.Password, user.PasswordHash))
+                 return "Please check your Credentials";            
+
+             // Generate JWT token
+             var token = _jwtService.GenerateToken(user);
+             return token;*/
             var user = await _repo.GetByUsernameAsync(query.Username);
 
-            if (user == null || !BCrypt.Net.BCrypt.Verify(query.Password, user.PasswordHash))
-                return "Please check your Credentials";            
+            if (user == null)
+                throw new UnauthorizedAccessException();
 
-            // Generate JWT token
+            var validPassword = BCrypt.Net.BCrypt.Verify(
+                query.Password,
+                user.PasswordHash);
+
+            if (!validPassword)
+                throw new UnauthorizedAccessException();
+
             var token = _jwtService.GenerateToken(user);
+
             return token;
         }
     }

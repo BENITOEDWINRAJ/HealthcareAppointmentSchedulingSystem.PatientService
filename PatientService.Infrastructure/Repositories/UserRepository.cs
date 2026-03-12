@@ -27,6 +27,7 @@ namespace PatientService.Infrastructure.Repositories
         {
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
+
             /*await _kafka.PublishUserCreated(new UserCreatedEvent
             {
                 UserId = user.Id,
@@ -35,7 +36,7 @@ namespace PatientService.Infrastructure.Repositories
             });*/
         }
 
-        public async Task<User> GetByUsernameAsync(string username)
+        /*public async Task<User> GetByUsernameAsync(string username)
         {
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Username == username);
             if (user == null)
@@ -43,6 +44,11 @@ namespace PatientService.Infrastructure.Repositories
                 throw new InvalidOperationException($"User with username '{username}' not found.");
             }
             return user;
+        }*/
+        public async Task<User?> GetByUsernameAsync(string username)
+        {
+            return await _context.Users
+                .FirstOrDefaultAsync(x => x.Username == username);
         }
 
         public async Task<User> GetByIdAsync(Guid id)
@@ -59,5 +65,7 @@ namespace PatientService.Infrastructure.Repositories
         {
             return await _context.Users.ToListAsync();
         }
+
+        
     }
 }

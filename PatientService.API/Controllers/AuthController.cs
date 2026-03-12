@@ -6,6 +6,7 @@ using PatientService.Application.DTOs;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using PatientService.Application.Handlers.Interfaces;
 using PatientService.Application.Commands;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PatientService.API.Controllers
 {
@@ -30,30 +31,26 @@ namespace PatientService.API.Controllers
 
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterRequest request)
-        {
-            var user = new User
+        {            
+            try
             {
-                Id = Guid.NewGuid(),
-                Username = request.Username,
-                Password = request.Password,
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
-                Role = request.Role
-            };
-            _logger.LogInformation("User registration started for {Username}",
-        request.Username);
-            //var id = await _createHandler.Handle(command);
-            //await _repo.AddAsync(user);
-            var id =await _registerHandler.Handle(new Application.Commands.RegisterUserCommand
+                _logger.LogInformation("User registration started for {Username}",
+         request.Username);
+                var id = await _registerHandler.Handle(new RegisterUserCommand
+                {
+                    Username = request.Username,
+                    Password = request.Password,
+                    Role = request.Role
+                });
+                _logger.LogInformation("User registered successfully {Username}",
+         request.Username);
+
+                return Ok(id);
+            }
+            catch (Exception ex)
             {
-                Username = request.Username,
-                Password = request.Password,
-                Role = request.Role
-            });
-
-            _logger.LogInformation("User registered successfully {Username}",
-        request.Username);
-
-            return Ok(user.Id);
+                return BadRequest(ex.Message);
+            }
         }
 
         
@@ -68,14 +65,29 @@ namespace PatientService.API.Controllers
                 var query = new LoginCommand(request.Username, request.Password);
                 var token = await _loginHandler.Handle(query);
 
-                return Ok(new { Token = token });                
+                return Ok(new { Token = token });
             }
             catch (UnauthorizedAccessException)
             {
                 return Unauthorized("Invalid username or password");
             }
-        }       
+        }
+        [NonAction]
+        [HttpGet("AllRegisteredUsers")]
+        public async Task<IActionResult> GetUsers()
+        {
+            _logger.LogInformation("Fetching all users");
 
-        
+            var users = await _repo.GetAllAsync();
+
+            var result = users.Select(u => new
+            {
+                u.Id,
+                u.Username,
+                u.Role
+            });
+
+            return Ok(result);
+        }
     }
 }

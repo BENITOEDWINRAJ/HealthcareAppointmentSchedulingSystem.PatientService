@@ -47,7 +47,7 @@ builder.Services.AddValidatorsFromAssemblyContaining<RegisterRequestValidator>()
 
 // DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseInMemoryDatabase("UserDb"));
+    options.UseInMemoryDatabase("PatientDB"));
 
 // Dependency Injection
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -104,10 +104,6 @@ builder.Services.AddSwaggerGen();
 // -----------------------------
 var app = builder.Build();
 
-
-// -----------------------------
-// Configure Middleware Pipeline
-// -----------------------------
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -115,8 +111,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-// Authentication MUST come before Authorization
 app.UseAuthentication();
 app.UseAuthorization();
 
