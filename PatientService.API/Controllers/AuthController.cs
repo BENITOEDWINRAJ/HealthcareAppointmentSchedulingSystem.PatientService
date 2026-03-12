@@ -45,7 +45,11 @@ namespace PatientService.API.Controllers
                 _logger.LogInformation("User registered successfully {Username}",
          request.Username);
 
-                return Ok(id);
+                return Ok(new
+                {
+                    Message = "User registered successfully",
+                    UserId = id
+                });
             }
             catch (Exception ex)
             {
@@ -65,7 +69,11 @@ namespace PatientService.API.Controllers
                 var query = new LoginCommand(request.Username, request.Password);
                 var token = await _loginHandler.Handle(query);
 
-                return Ok(new { Token = token });
+                return Ok(new
+                {
+                    Message = "User logged in successfully, and the JWT token was generated.",
+                    Token = token
+                });
             }
             catch (UnauthorizedAccessException)
             {
