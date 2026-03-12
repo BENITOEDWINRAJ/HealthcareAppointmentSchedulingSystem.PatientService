@@ -29,6 +29,7 @@ namespace PatientService.API.Controllers
             _loginHandler = loginHandler;
         }
 
+        // Registration for Patients and Doctors
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterRequest request)
         {            
@@ -57,8 +58,8 @@ namespace PatientService.API.Controllers
             }
         }
 
-        
 
+        //Login for Patients and Doctors
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginRequest request)
         {
@@ -80,6 +81,8 @@ namespace PatientService.API.Controllers
                 return Unauthorized("Invalid username or password");
             }
         }
+
+        
         [NonAction]
         [HttpGet("AllRegisteredUsers")]
         public async Task<IActionResult> GetUsers()
