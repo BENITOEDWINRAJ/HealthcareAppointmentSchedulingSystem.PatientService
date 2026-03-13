@@ -2,7 +2,7 @@
 using PatientService.Core.Entities;
 using PatientService.Core.Repositories;
 using PatientService.Infrastructure.Data;
-using PatientService.Infrastructure.Messaging;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,37 +14,19 @@ namespace PatientService.Infrastructure.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        private readonly ApplicationDbContext _context;
-        private readonly KafkaProducerService _kafka;        
+        private readonly ApplicationDbContext _context;               
 
-        public UserRepository(ApplicationDbContext context, KafkaProducerService kafka)
+        public UserRepository(ApplicationDbContext context)
         {
-            _context = context;
-            _kafka = kafka;
+            _context = context;            
         }
 
         public async Task AddAsync(User user)
         {
             await _context.Users.AddAsync(user);
-            await _context.SaveChangesAsync();
-
-            /*await _kafka.PublishUserCreated(new UserCreatedEvent
-            {
-                UserId = user.Id,
-                Username = user.Username,
-                Role = user.Role
-            });*/
+            await _context.SaveChangesAsync();            
         }
-
-        /*public async Task<User> GetByUsernameAsync(string username)
-        {
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Username == username);
-            if (user == null)
-            {
-                throw new InvalidOperationException($"User with username '{username}' not found.");
-            }
-            return user;
-        }*/
+        
         public async Task<User?> GetByUsernameAsync(string username)
         {
             return await _context.Users
