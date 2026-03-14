@@ -28,16 +28,7 @@ namespace PatientService.Application.Handlers
         }
 
         public async Task<string> Handle(LoginCommand query)
-        {
-
-            /* var user = await _repo.GetByUsernameAsync(query.Username);
-
-             if (user == null || !BCrypt.Net.BCrypt.Verify(query.Password, user.PasswordHash))
-                 return "Please check your Credentials";            
-
-             // Generate JWT token
-             var token = _jwtService.GenerateToken(user);
-             return token;*/
+        {            
             var user = await _repo.GetByUsernameAsync(query.Username);
 
             if (user == null)
