@@ -45,6 +45,7 @@ builder.Services.AddControllers(options =>
 
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<RegisterRequestValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<LoginRequestValidator>();
 
 #endregion
 

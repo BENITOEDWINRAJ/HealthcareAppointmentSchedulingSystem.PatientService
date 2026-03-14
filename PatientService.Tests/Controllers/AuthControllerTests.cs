@@ -1,112 +1,42 @@
 ﻿using Xunit;
 using Moq;
+using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
 using PatientService.API.Controllers;
-using PatientService.Core.Entities;
-using PatientService.Core.Repositories;
-using PatientService.Application.DTOs;
-using FluentAssertions;
 using PatientService.Application.Handlers.Interfaces;
-using PatientService.Application.Handlers;
 using PatientService.Application.Commands;
+using PatientService.Application.DTOs;
+using PatientService.Core.Repositories;
+using System;
+using System.Threading.Tasks;
 
 
 namespace PatientService.Tests.Controllers
 {
     public class AuthControllerTests
     {
-        private readonly Mock<IUserRepository> _repoMock;
-        private readonly Mock<IJwtService> _jwtMock;
-        private readonly Mock<ILogger<AuthController>> _loggerMock;
-        private readonly Mock<IRegisterUserHandler> _registerHandler;
-        private readonly Mock<ILoginHandler> _loginHandler;
+        private readonly Mock<IUserRepository> _repoMock = new();
+        private readonly Mock<IJwtService> _jwtMock = new();
+        private readonly Mock<ILogger<AuthController>> _loggerMock = new();
+        private readonly Mock<IRegisterUserHandler> _registerHandlerMock = new();
+        private readonly Mock<ILoginHandler> _loginHandlerMock = new();
         private readonly AuthController _controller;
 
         public AuthControllerTests()
         {
-            _repoMock = new Mock<IUserRepository>();
-            _jwtMock = new Mock<IJwtService>();
-            _loggerMock = new Mock<ILogger<AuthController>>();
-            _registerHandler = new Mock<IRegisterUserHandler>();
-            _loginHandler = new Mock<ILoginHandler>();
             _controller = new AuthController(
-                _repoMock.Object,
-                _jwtMock.Object,
-                _loggerMock.Object,
-                _registerHandler.Object,
-                _loginHandler.Object
-            );
-        }
-
-        [Fact]
-        public async Task Register_ShouldCreateUser_ReturnUserId()
-        {
-            // Arrange
-            var request = new RegisterRequest
-            {
-                Username = "testuser",
-                Password = "password123",
-                Role = "Admin"
-            };
-
-            var userId = Guid.NewGuid();
-
-            _registerHandler
-                .Setup(x => x.Handle(It.IsAny<RegisterUserCommand>()))
-                .ReturnsAsync(userId);
-
-            // Act
-            var result = await _controller.Register(request);
-
-            // Assert
-            var okResult = result as OkObjectResult;
-
-            okResult.Should().NotBeNull();
-            okResult!.Value.Should().BeOfType<Guid>();
-
-            _registerHandler.Verify(
-                x => x.Handle(It.IsAny<RegisterUserCommand>()),
-                Times.Once);
-        }
+            _repoMock.Object,
+            _jwtMock.Object,
+            _loggerMock.Object,
+            _registerHandlerMock.Object,
+            _loginHandlerMock.Object);
+        }        
 
         [Fact]
         public async Task Login_ShouldReturnToken_WhenCredentialsValid()
         {
-            // Arrange
-            /* var password = "password123";
-             var hashed = BCrypt.Net.BCrypt.HashPassword(password);
-
-             var user = new User
-             {
-                 Id = Guid.NewGuid(),
-                 Username = "testuser",
-                 PasswordHash = hashed,
-                 Role = "Doctor"
-             };
-
-             var request = new LoginRequest
-             {
-                 Username = "testuser",
-                 Password = password
-             };
-
-             _repoMock
-                 .Setup(x => x.GetByUsernameAsync(request.Username))
-                 .ReturnsAsync(user);
-
-             _jwtMock
-                 .Setup(x => x.GenerateToken(user))
-                 .Returns("fake-jwt-token");
-
-             // Act
-             var result = await _controller.Login(request);
-
-             // Assert
-             var ok = result as OkObjectResult;
-
-             ok.Should().NotBeNull();
-             ok.Value.Should().Be("fake-jwt-token");*/
+            // Arrange            
             var request = new LoginRequest
             {
                 Username = "testuser",
@@ -114,7 +44,7 @@ namespace PatientService.Tests.Controllers
                // ,Role = "Patient"
             };
 
-            _loginHandler
+            _loginHandlerMock
                 .Setup(x => x.Handle(It.IsAny<LoginCommand>()))
                 .ReturnsAsync("fake-jwt-token");
 
@@ -143,7 +73,7 @@ namespace PatientService.Tests.Controllers
                 //,Role = "Doctor"
             };
 
-            _loginHandler
+            _loginHandlerMock
                 .Setup(x => x.Handle(It.IsAny<LoginCommand>()))
                 .ThrowsAsync(new UnauthorizedAccessException());
 
@@ -165,7 +95,7 @@ namespace PatientService.Tests.Controllers
                 //,Role = "Patient"
             };
 
-            _loginHandler
+            _loginHandlerMock
                 .Setup(x => x.Handle(It.IsAny<LoginCommand>()))
                 .ThrowsAsync(new UnauthorizedAccessException());
 
@@ -174,35 +104,8 @@ namespace PatientService.Tests.Controllers
 
             // Assert
             result.Should().BeOfType<UnauthorizedObjectResult>();
-        }
-
-        [Fact]
-        public async Task Register_ReturnsOk_WithUserId()
-        {
-            var request = new RegisterRequest
-            {
-                Username = "testuser",
-                Password = "password",
-                Role = "Patient"
-            };
-
-            var userId = Guid.NewGuid();
-
-            _registerHandler
-                .Setup(x => x.Handle(It.IsAny<RegisterUserCommand>()))
-                .ReturnsAsync(userId);
-
-            var result = await _controller.Register(request);
-
-            var okResult = result as OkObjectResult;
-
-            okResult.Should().NotBeNull();
-            okResult!.StatusCode.Should().Be(200);
-        }
+        }        
         
-        // ----------------------------------------------------
-        // Login - Unauthorized
-        // ----------------------------------------------------
         [Fact]
         public async Task Login_ReturnsUnauthorized_WhenInvalidCredentials()
         {
@@ -213,7 +116,7 @@ namespace PatientService.Tests.Controllers
                //, Role = "Doctor"
             };
 
-            _loginHandler
+            _loginHandlerMock
                 .Setup(x => x.Handle(It.IsAny<LoginCommand>()))
                 .ThrowsAsync(new UnauthorizedAccessException());
 
@@ -222,5 +125,52 @@ namespace PatientService.Tests.Controllers
             result.Should().BeOfType<UnauthorizedObjectResult>();
         }
 
+        [Fact]
+        public async Task Register_ShouldReturnOk_WhenUserIsCreated()
+        {
+            // Arrange
+            var request = new RegisterRequest
+            {
+                Username = "john",
+                Password = "123456",
+                Role = "Patient"
+            };
+
+            var expectedUserId = Guid.NewGuid();
+
+            _registerHandlerMock
+                .Setup(x => x.Handle(It.IsAny<RegisterUserCommand>()))
+                .ReturnsAsync(expectedUserId);
+
+            // Act
+            var result = await _controller.Register(request);
+
+            // Assert
+            var okResult = result.Should().BeOfType<OkObjectResult>().Subject;
+            okResult.StatusCode.Should().Be(200);
+        }        
+
+        [Fact]
+        public async Task Register_ShouldReturnBadRequest_WhenExceptionThrown()
+        {
+            // Arrange
+            var request = new RegisterRequest
+            {
+                Username = "john",
+                Password = "123456",
+                Role = "Patient"
+            };
+
+            _registerHandlerMock
+                .Setup(x => x.Handle(It.IsAny<RegisterUserCommand>()))
+                .ThrowsAsync(new Exception("User already exists"));
+
+            // Act
+            var result = await _controller.Register(request);
+
+            // Assert
+            result.Should().BeOfType<BadRequestObjectResult>();
+        }       
+               
     }
 }

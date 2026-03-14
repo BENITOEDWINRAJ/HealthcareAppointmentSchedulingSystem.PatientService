@@ -85,22 +85,22 @@ namespace PatientService.API.Controllers
             }
         }
         
-        [Authorize(Roles = "Doctor")]
-        [HttpGet("AllRegisteredUsers")]
-        public async Task<IActionResult> GetUsers()
-        {
-            _logger.LogInformation("Fetching all users");
+        //[Authorize(Roles = "Doctor")]
+        //[HttpGet("AllRegisteredUsers")]
+        //public async Task<IActionResult> GetUsers()
+        //{
+        //    _logger.LogInformation("Fetching all users");
 
-            var users = await _repo.GetAllAsync();
+        //    var users = await _repo.GetAllAsync();
 
-            var result = users.Select(u => new
-            {
-                u.Id,
-                u.Username,
-                u.Role
-            });
+        //    var result = users.Select(u => new
+        //    {
+        //        u.Id,
+        //        u.Username,
+        //        u.Role
+        //    });
 
-            return Ok(result);
-        }
+        //    return Ok(result);
+        //}
     }
 }

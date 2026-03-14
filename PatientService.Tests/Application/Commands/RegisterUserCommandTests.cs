@@ -1,7 +1,11 @@
-﻿
-using PatientService.Application.Commands;
-using Xunit;
-namespace PatientService.Tests
+﻿using PatientService.Application.Commands;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace PatientService.Tests.Application.Commands
 {
     public class RegisterUserCommandTests
     {
