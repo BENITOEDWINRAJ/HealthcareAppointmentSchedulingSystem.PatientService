@@ -83,7 +83,25 @@ namespace PatientService.API.Controllers
             {
                 return Unauthorized("Invalid username or password");
             }
-        }       
-        
+        }
+
+        [Authorize(Roles = "Doctor")]
+        [HttpGet("AllRegisteredUsers")]
+        public async Task<IActionResult> GetUsers()
+        {
+            _logger.LogInformation("Fetching all users");
+
+            var users = await _repo.GetAllAsync();
+
+            var result = users.Select(u => new
+            {
+                u.Id,
+                u.Username,
+                u.Role
+            });
+
+            return Ok(result);
+        }
+
     }
 }
