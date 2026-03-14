@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace PatientService.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
@@ -30,6 +31,7 @@ namespace PatientService.API.Controllers
         }
 
         // Registration for Patients and Doctors
+        [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterRequest request)
         {            
@@ -60,6 +62,7 @@ namespace PatientService.API.Controllers
 
 
         //Login for Patients and Doctors
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginRequest request)
         {
@@ -81,9 +84,7 @@ namespace PatientService.API.Controllers
                 return Unauthorized("Invalid username or password");
             }
         }
-
-
-        //[NonAction]
+        
         [Authorize(Roles = "Doctor")]
         [HttpGet("AllRegisteredUsers")]
         public async Task<IActionResult> GetUsers()
