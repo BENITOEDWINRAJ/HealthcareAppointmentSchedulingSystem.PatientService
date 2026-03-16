@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PatientService", "PatientService", "{F39DB191-1255-4D66-98C5-86D8D4D67FC7}"
+	ProjectSection(SolutionItems) = preProject
+		PatientService.API\README.md = PatientService.API\README.md
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PatientService.API", "PatientService.API\PatientService.API.csproj", "{25C7F746-BCF0-4C44-9D91-E1E7E3ECE58B}"
 EndProject
