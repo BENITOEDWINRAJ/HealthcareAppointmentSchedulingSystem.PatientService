@@ -132,3 +132,39 @@ Requirements
 .NET 8 SDK
 
 Visual Studio 2022
+
+
+If you face any challenges while running the solution, please follow the steps below:
+
+Download the source code from the Git repository.
+
+Create a new folder in the root of the C or D drive. Name the folder using a short name like "repo".
+
+Rename the project folder if necessary by removing “-master” from the project name.
+
+Open the solution in Visual Studio. Right-click on the solution and select Open in Terminal.
+
+Run the restore command:
+
+dotnet restore
+
+Clean the solution.
+
+Delete the bin and obj folders in all projects.
+
+Rebuild the solution.
+
+If the build is successful, the solution should run correctly. If the build fails, unload the Test Project and try building the solution again.
+
+Please follow the same steps for the AppointmentService as well.
+
+If you encounter additional issues, try the following fixes:
+
+Remove the Kafka package from the Infrastructure project if it causes dependency issues.
+
+If the JWT token DLL is not loading properly, remove the JWT reference from the project and add the Shared project reference again. Then rebuild the solution.
+
+I hope these steps help you run the solution successfully.
+
+Note:
+Sometimes the Test Project may be blocked by the system. In that case, allow or unblock the repository path because it might be marked as quarantined. After allowing it, try rebuilding the entire solution again.
