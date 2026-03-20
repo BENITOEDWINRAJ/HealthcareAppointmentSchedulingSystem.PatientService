@@ -85,7 +85,7 @@ namespace PatientService.API.Controllers
             }
         }
 
-        [Authorize(Roles = "Doctor")]
+        //[Authorize(Roles = "Doctor")]
         [HttpGet("AllRegisteredUsers")]
         public async Task<IActionResult> GetUsers()
         {
